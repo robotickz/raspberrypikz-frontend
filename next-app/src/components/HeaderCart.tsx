@@ -12,7 +12,7 @@ const HeaderCart = () => {
   useEffect(() => {
     const getCartFromStorage = () => {
       let value: Cart = JSON.parse(
-        localStorage.getItem("cart") || '{"items":[]}'
+        localStorage.getItem("cart") || '{"items":[]}',
       );
       setCart(value);
     };
@@ -73,7 +73,7 @@ const HeaderCart = () => {
         <IoBagHandleOutline fontSize={18} />
       </div>
       <div
-        className={`absolute m-0 top-0 left-0 bg-black/50 w-screen h-screen aimate-in fade-in duration-300 ${isOpen ? "" : "hidden"}`}
+        className={`absolute z-10 m-0 top-0 left-0 bg-black/50 w-screen h-screen animate-in fade-in duration-300 ${isOpen ? "" : "hidden"}`}
         onClick={handleClose}
       >
         <div

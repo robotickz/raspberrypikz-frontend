@@ -1,6 +1,5 @@
 import Image from "next/image";
 import React from "react";
-import parse, { HTMLReactParserOptions, domToReact } from "html-react-parser";
 import { Product } from "@/src/common.types";
 import ProductAmountButton from "@/src/components/ProductAmountButton";
 import { getProduct } from "@/src/helpers/database";
@@ -8,6 +7,7 @@ import Link from "next/link";
 import { unstable_noStore } from "next/cache";
 import { FaRaspberryPi } from "react-icons/fa6";
 import type { Metadata } from "next";
+import Markdown from "react-markdown";
 
 interface Params {
   productId: string;
@@ -43,21 +43,6 @@ const RpiDivider = () => {
 export default async function ProductDetail({ params }: { params: Params }) {
   unstable_noStore();
   const product: Product = await getProduct(params.productId);
-  const options: HTMLReactParserOptions = {
-    replace(domNode: any) {
-      if (!domNode.attribs) {
-        return;
-      }
-
-      if (domNode.name === "ul") {
-        return (
-          <ul className="pl-12 list-disc">
-            {domToReact(domNode.children, options)}
-          </ul>
-        );
-      }
-    },
-  };
 
   return (
     <div className="max-w-[1024px] py-10">
@@ -96,7 +81,9 @@ export default async function ProductDetail({ params }: { params: Params }) {
         </div>
       </div>
       <RpiDivider />
-      <div className="text-sm/6">{parse(product.description, options)}</div>
+      <div className="text-sm/6">
+        <Markdown>{product.description}</Markdown>
+      </div>
       <RpiDivider />
       {/* <div className="font-bold text-2xl text-red-900 text-center mt-8">
        Вам могут пригодиться

@@ -139,7 +139,7 @@ const Checkout = () => {
       zipCode: data.zipCode,
       phone: data.phone,
       email: data.email,
-      isOrganisation: data.paymentRadio == "bisnes",
+      isOrganization: data.paymentRadio == "bisnes",
     };
     const delivery = await createDelivery(dData);
     const newOrder = await createOrder(cartsId, delivery.id);
@@ -193,7 +193,7 @@ const Checkout = () => {
       email: formData.email.value,
       paymentRadio: formData.paymentRadio.value,
     };
-    createNewOrder(data);
+    createNewOrder(data).then();
     event.preventDefault();
   };
 
@@ -348,6 +348,7 @@ const Checkout = () => {
                   value="visa"
                   name="paymentRadio"
                   onChange={checkPaymentSelection}
+                  disabled
                 />
                 <label
                   htmlFor="payment-radio-2"
@@ -370,7 +371,7 @@ const Checkout = () => {
                 className="text-blue-500"
                 href="/privacy_policy"
               >
-                политика конфиденциальности
+                политике конфиденциальности
               </Link>
               .
             </div>

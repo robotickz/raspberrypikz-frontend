@@ -12,17 +12,9 @@ interface Props {
 const ProductAmountButton = ({ product }: Props) => {
   const [amount, setAmount] = useState(1);
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newAmount = parseInt(event.target.value);
-    setAmount(newAmount);
-  };
-
   return (
     <>
-      <ProductAmountInput
-        product={product}
-        handleChange={handleInputChange}
-      />
+      <ProductAmountInput product={product} handleChange={setAmount} />
       <ToCartButton id={product.id} product={product} amount={amount} />
     </>
   );

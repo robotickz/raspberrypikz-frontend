@@ -36,5 +36,5 @@ export interface DeliveryData {
   zipCode: string;
   phone: string;
   email: string;
-  isOrganisation: boolean;
+  isOrganization: boolean;
 }

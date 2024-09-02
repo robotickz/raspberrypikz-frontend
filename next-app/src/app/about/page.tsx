@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: 'Контакты - Raspberry Pi - одноплатные компьютеры',
-  description: 'Контакты',
-}
+  title: "Контакты - Raspberry Pi - одноплатные компьютеры",
+  description: "Контакты",
+};
 
 const AboutPage = () => {
   return (
@@ -13,12 +13,9 @@ const AboutPage = () => {
         <div className="text-3xl mb-6">Контакты</div>
         <div>
           <p className="text-sm">
-            Адрес:{" "}
-            <span>
-              г. Алматы, пр. Назарбаева 103,&nbsp; этаж 5, кабинет 503/2
-            </span>
+            Адрес: <span>г. Алматы, Улица Утепова, 19а</span>
             <br />
-            Телефоны: +7 777 931 95 33, +7 778 572 25 96, +7 777 771 89 29
+            Телефоны: +7 778 572 25 96, +7 777 771 89 29
             <br />
             <br />
             Электронная почта: admin@raspberrypi.kz
@@ -45,13 +42,26 @@ const AboutPage = () => {
           программы для одноплатных компьютеров.
         </div>
       </div>
-      <div>
+      <div className="relative overflow-hidden">
+        <a
+          href="https://yandex.kz/maps/162/almaty/?utm_medium=mapframe&utm_source=maps"
+          className="text-[#eee] text-sm absolute top-0"
+        >
+          Алматы
+        </a>
+        <a
+          href="https://yandex.kz/maps/162/almaty/house/tashen_otepov_koshesi_19a/Y08Yfg5lTEYAQFppfX5weHthZw==/?ll=76.896500%2C43.219509&utm_medium=mapframe&utm_source=maps&z=17.57"
+          className="text-[#eee] text-sm absolute top-[14px]"
+        >
+          Улица Ташена Утепова, 19А — Яндекс Карты
+        </a>
         <iframe
-          className="md:h-full w-full"
-          src="https://yandex.kz/map-widget/v1/?ll=76.945762%2C43.257619&amp;mode=search&amp;ol=geo&amp;ouri=ymapsbm1%3A%2F%2Fgeo%3Fdata%3DCgg2NzI5Nzc0MxJI0prQsNC30LDSm9GB0YLQsNC9LCDQkNC70LzQsNGC0YssINCd0LDQt9Cw0YDQsdCw0LXQsiDQtNCw0qPSk9GL0LvRiywgMTAzIgoNO-SZQhXNBy1C&amp;z=17.05"
+          src="https://yandex.kz/map-widget/v1/?ll=76.896500%2C43.219509&mode=whatshere&whatshere%5Bpoint%5D=76.894838%2C43.219703&whatshere%5Bzoom%5D=17&z=17.57"
           width="560"
           height="400"
           frameBorder="1"
+          allowFullScreen
+          className="relative"
         ></iframe>
       </div>
     </div>

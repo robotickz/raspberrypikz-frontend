@@ -19,7 +19,7 @@ const ProductsByCategoryBlock = ({
       className={`flex flex-col max-w-[1024px] items-end ${index > 0 ? "mt-8" : ""}`}
     >
       <CategoryButton name={category.name} slug={category.slug} />
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-[1024px]">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full gap-6 max-w-[1024px]">
         {products.map((product, index) => (
           <ProductCard key={index} product={product} />
         ))}

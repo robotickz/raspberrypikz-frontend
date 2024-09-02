@@ -7,7 +7,7 @@ const Footer = () => {
       className="bg-[#ecf0f1] flex justify-center
         min-h-20 pr-6 pl-6 pt-20 pb-20"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 place-items-start items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 place-items-start items-stretch max-w-[1024px] w-full">
         <div className="">
           <h1 className="text-black text-3xl pb-3">Способы оплаты</h1>
           <Image
@@ -24,10 +24,6 @@ const Footer = () => {
           </p>
           <p>
             <b>Телефоны:</b>&nbsp;
-            <a className="text-blue-600" href="http://tel:+77779319533">
-              +7 777 931 95 33
-            </a>
-            ,&nbsp;
             <a className="text-blue-600" href="http://tel:+77785722596">
               +7 778 572 25 96
             </a>

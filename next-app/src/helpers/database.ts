@@ -1,61 +1,55 @@
 import { Cart, Category, DeliveryData, Product } from "@/src/common.types";
 import initPocketBase from "./initPocketbase";
-import { ListResult, RecordModel } from "pocketbase";
 
-function _getProducts(dbProducts: ListResult<RecordModel>) {
+function _getProducts(dbProducts: any[]) {
   const products: Product[] = [];
-  if (dbProducts.totalItems > 0) {
-    dbProducts.items.forEach((product) => {
-      const imageUrl = `${process.env.PB_IMAGE_URL}/api/files/${product.collectionId}/${product.id}/${product.image}`;
+  if (dbProducts.length > 0) {
+    dbProducts.forEach((product) => {
+      const imageUrl = product.images[0].url;
       const category: Category = {
-        id: product.expand?.category.id,
-        name: product.expand?.category.name,
-        slug: product.expand?.category.slug,
+        id: product.category.id,
+        name: product.category.name,
+        slug: product.category.slug,
       };
       products.push({
         id: product.id,
         imageUrl: imageUrl,
         category: category,
         name: product.name,
-        description: product.description,
+        description: product.description.replace(/(\r\n|\n|\r|\t)/gm, ""),
         price: product.price,
         amount: product.amount,
-        metaDescription: product.metaDescription,
+        metaDescription: product.meta_description,
         keywords: product.keywords,
       } as Product);
     });
   }
+  products.sort((a: Product, b: Product) => b.amount - a.amount);
   return products;
 }
 
 export default async function getAllProducts() {
-  const pb = await initPocketBase();
-  const dbProducts = await pb
-    .collection("products")
-    .getList(1, 50, { expand: "category", sort: "-amount" });
-  return _getProducts(dbProducts);
+  const response = await fetch("https://pb1.raspberrypi.kz/api/products");
+  return _getProducts(await response.json());
 }
 
 export async function getProductsByCategory(category: Category) {
-  const pb = await initPocketBase();
-  const dbProducts = await pb.collection("products").getList(1, 50, {
-    expand: "category",
-    filter: `category = "${category.id}"`,
-    sort: "-amount",
-  });
-  return _getProducts(dbProducts);
+  const response = await fetch(
+    "https://pb1.raspberrypi.kz/api/products/by_category/" + category.id,
+  );
+  return _getProducts(await response.json());
 }
 
 export async function getProduct(productId: string) {
-  const pb = await initPocketBase();
-  const dbProduct = await pb
-    .collection("products")
-    .getOne(productId, { expand: "category" });
-  const imageUrl = `${process.env.PB_IMAGE_URL}/api/files/${dbProduct.collectionId}/${dbProduct.id}/${dbProduct.image}`;
+  const response = await fetch(
+    "https://pb1.raspberrypi.kz/api/products/" + productId,
+  );
+  const dbProduct = await response.json();
+  const imageUrl = dbProduct.images[0].url;
   const category: Category = {
-    id: dbProduct.expand?.category.id,
-    name: dbProduct.expand?.category.name,
-    slug: dbProduct.expand?.category.slug,
+    id: dbProduct.category.id,
+    name: dbProduct.category.name,
+    slug: dbProduct.category.slug,
   };
   const product: Product = {
     id: dbProduct.id,
@@ -65,60 +59,82 @@ export async function getProduct(productId: string) {
     description: dbProduct.description,
     price: dbProduct.price,
     amount: dbProduct.amount,
-    metaDescription: dbProduct.metaDescription,
+    metaDescription: dbProduct.meta_description,
     keywords: dbProduct.keywords,
   };
   return product;
 }
 
+async function makePostRequest(url: string, data: any) {
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    return await response.json();
+  } catch (e) {
+    console.log(e);
+  }
+  return null;
+}
+
 export async function createCarts(cart: Cart) {
-  const pb = await initPocketBase();
-  pb.autoCancellation(false);
   const cartsId: string[] = [];
   for (const item of cart.items) {
     const data = {
-      product: item.product.id,
+      product: parseInt(item.product.id),
       amount: item.amount,
     };
-    const record = await pb.collection("carts").create(data);
-    cartsId.push(record.id);
+    const newCart = await makePostRequest(
+      "https://pb1.raspberrypi.kz/api/carts/",
+      data,
+    );
+    if (newCart !== null) {
+      cartsId.push(newCart.id);
+    }
   }
   return cartsId;
 }
 
-export async function createDelivery(data: DeliveryData) {
-  const pb = await initPocketBase();
-  return await pb.collection("deliveries").create(data);
-}
-
-export async function getLastOrderNumber() {
-  const pb = await initPocketBase();
-  const order = await pb
-    .collection("orders")
-    .getFirstListItem("1=1", { sort: "-created" });
-  return order?.number;
+export async function createDelivery(dData: DeliveryData) {
+  const data = {
+    first_name: dData.firstName,
+    last_name: dData.lastName,
+    organization: dData.organization,
+    address: dData.address,
+    locality: dData.locality,
+    region: dData.region,
+    zip_code: dData.zipCode,
+    phone: dData.phone,
+    email: dData.email,
+    is_organization: dData.isOrganization,
+  };
+  return await makePostRequest(
+    "https://pb1.raspberrypi.kz/api/deliveries/",
+    data,
+  );
 }
 
 export async function createOrder(cartsId: string[], deliveryId: string) {
-  const pb = await initPocketBase();
-  const lastOrderNumber = await getLastOrderNumber();
   const data = {
-    status: "pending",
-    cart: cartsId,
-    paid: false,
+    carts: cartsId,
     delivery: deliveryId,
-    number: lastOrderNumber ? lastOrderNumber + 1 : 1,
   };
-  return await pb.collection("orders").create(data);
+  return await makePostRequest("https://pb1.raspberrypi.kz/api/orders/", data);
 }
 
 export async function getCategories() {
-  const pb = await initPocketBase();
-  const dbCategories = await pb.collection("categories").getList(1, 50);
+  const response = await fetch("https://pb1.raspberrypi.kz/api/categories");
+  const dbCategories = await response.json();
   const categories: Category[] = [];
-  if (dbCategories.totalItems > 0) {
-    dbCategories.items.forEach((dbCategory) => {
+  if (dbCategories.length > 0) {
+    dbCategories.forEach((dbCategory: any) => {
       categories.push({
+        id: dbCategory.id,
         name: dbCategory.name,
         slug: dbCategory.slug,
       } as Category);
@@ -128,10 +144,10 @@ export async function getCategories() {
 }
 
 export async function getCategoryBySlug(slug: string) {
-  const pb = await initPocketBase();
-  const dbCategory = await pb
-    .collection("categories")
-    .getFirstListItem(`slug="${slug}"`);
+  const response = await fetch(
+    "https://pb1.raspberrypi.kz/api/categories/by_slug/" + slug,
+  );
+  const dbCategory = await response.json();
   const category: Category = {
     id: dbCategory.id,
     name: dbCategory.name,

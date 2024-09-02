@@ -6,8 +6,8 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "89.46.33.193",
-        port: "8090",
-        pathname: "/api/files/**/**/**",
+        port: "8025",
+        pathname: "/i/**",
       },
       // {
       //   protocol: "https",
@@ -17,17 +17,11 @@ const nextConfig = {
       // },
       {
         protocol: "https",
-        hostname: "pb.raspberrypi.kz",
+        hostname: "picsur.robotic.kz",
         port: "",
-        pathname: "/api/files/**/**/**",
+        pathname: "/i/**",
       },
     ],
-  },
-  env: {
-    PB_IMAGE_URL: "https://pb.raspberrypi.kz",
-    PB_HOSTNAME: "https://pb.raspberrypi.kz",
-    PB_USERNAME: "ntsmllc@gmail.com",
-    PB_PASSWORD: "Yeso2006",
   },
 };
 
