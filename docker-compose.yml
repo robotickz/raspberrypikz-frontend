@@ -6,19 +6,8 @@ services:
     build:
       context: ./next-app
       dockerfile: Dockerfile
-      args:
-        PB_IMAGE_URL: ${PB_IMAGE_URL}
-        PB_HOSTNAME: ${PB_HOSTNAME}
-        PB_USERNAME: ${PB_USERNAME}
-        PB_PASSWORD: ${PB_PASSWORD}
     env_file:
       - .env.production.local
     restart: always
     ports:
       - 3000:3000
-    networks:
-      - pocketbase_default
-
-networks:
-  pocketbase_default:
-    external: true

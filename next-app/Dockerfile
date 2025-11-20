@@ -25,14 +25,7 @@ COPY postcss.config.js .
 
 # Environment variables must be present at build time
 # https://github.com/vercel/next.js/discussions/14030
-ARG PB_IMAGE_URL
-ENV PB_IMAGE_URL=${PB_IMAGE_URL}
-ARG PB_HOSTNAME
-ENV PB_HOSTNAME=${PB_HOSTNAME}
-ARG PB_USERNAME
-ENV PB_USERNAME=${PB_USERNAME}
-ARG PB_PASSWORD
-ENV PB_PASSWORD=${PB_PASSWORD}
+# Add your custom environment variables here if needed
 
 # Next.js collects completely anonymous telemetry data about general usage. Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line to disable telemetry at build time
@@ -66,14 +59,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 # Environment variables must be redefined at run time
-ARG PB_IMAGE_URL
-ENV PB_IMAGE_URL=${PB_IMAGE_URL}
-ARG PB_HOSTNAME
-ENV PB_HOSTNAME=${PB_HOSTNAME}
-ARG PB_USERNAME
-ENV PB_USERNAME=${PB_USERNAME}
-ARG PB_PASSWORD
-ENV PB_PASSWORD=${PB_PASSWORD}
+# Add your custom environment variables here if needed
 
 # Uncomment the following line to disable telemetry at run time
 ENV NEXT_TELEMETRY_DISABLED 1

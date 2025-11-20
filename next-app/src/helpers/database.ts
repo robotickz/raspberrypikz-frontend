@@ -1,5 +1,8 @@
 import { Cart, Category, DeliveryData, Product } from "@/src/common.types";
-import initPocketBase from "./initPocketbase";
+
+// API URL - замените на ваш реальный URL API
+// Для работы в Next.js создайте файл .env.local с переменной NEXT_PUBLIC_API_URL
+const API_URL = 'http://localhost:8000/api'; // Измените на ваш реальный URL API
 
 function _getProducts(dbProducts: any[]) {
   const products: Product[] = [];
@@ -29,20 +32,20 @@ function _getProducts(dbProducts: any[]) {
 }
 
 export default async function getAllProducts() {
-  const response = await fetch("https://pb1.raspberrypi.kz/api/products");
+  const response = await fetch(`${API_URL}/products`);
   return _getProducts(await response.json());
 }
 
 export async function getProductsByCategory(category: Category) {
   const response = await fetch(
-    "https://pb1.raspberrypi.kz/api/products/by_category/" + category.id,
+    `${API_URL}/products/by_category/${category.id}`,
   );
   return _getProducts(await response.json());
 }
 
 export async function getProduct(productId: string) {
   const response = await fetch(
-    "https://pb1.raspberrypi.kz/api/products/" + productId,
+    `${API_URL}/products/${productId}`,
   );
   const dbProduct = await response.json();
   const imageUrl = dbProduct.images[0].url;
@@ -90,7 +93,7 @@ export async function createCarts(cart: Cart) {
       amount: item.amount,
     };
     const newCart = await makePostRequest(
-      "https://pb1.raspberrypi.kz/api/carts/",
+      `${API_URL}/carts/`,
       data,
     );
     if (newCart !== null) {
@@ -114,7 +117,7 @@ export async function createDelivery(dData: DeliveryData) {
     is_organization: dData.isOrganization,
   };
   return await makePostRequest(
-    "https://pb1.raspberrypi.kz/api/deliveries/",
+    `${API_URL}/deliveries/`,
     data,
   );
 }
@@ -124,11 +127,11 @@ export async function createOrder(cartsId: string[], deliveryId: string) {
     carts: cartsId,
     delivery: deliveryId,
   };
-  return await makePostRequest("https://pb1.raspberrypi.kz/api/orders/", data);
+  return await makePostRequest(`${API_URL}/orders/`, data);
 }
 
 export async function getCategories() {
-  const response = await fetch("https://pb1.raspberrypi.kz/api/categories");
+  const response = await fetch(`${API_URL}/categories`);
   const dbCategories = await response.json();
   const categories: Category[] = [];
   if (dbCategories.length > 0) {
@@ -145,7 +148,7 @@ export async function getCategories() {
 
 export async function getCategoryBySlug(slug: string) {
   const response = await fetch(
-    "https://pb1.raspberrypi.kz/api/categories/by_slug/" + slug,
+    `${API_URL}/categories/by_slug/${slug}`,
   );
   const dbCategory = await response.json();
   const category: Category = {
